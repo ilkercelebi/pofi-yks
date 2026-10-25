@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self'; img-src 'self' data:; connect-src 'self' https://europe-west3-pofi-prod.cloudfunctions.net; form-action 'self'">
+<meta name="referrer" content="no-referrer">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hesap silme · Pofi</title>
+<link rel="stylesheet" href="/pofi-yks/style.css">
+</head>
+<body>
+<main>
+<nav><a href="/pofi-yks/gizlilik">Gizlilik</a><a href="/pofi-yks/kullanim-sartlari">Kullanım şartları</a><a href="/pofi-yks/aydinlatma-metni">KVKK aydınlatma</a><a href="/pofi-yks/hesap-silme">Hesap silme</a></nav>
+<h1>Hesap silme</h1>
+<p class="draft">Taslak metin — yayından önce veri koruma avukatı tarafından gözden geçirilecek. Köşeli parantezli alanlar doldurulacak.</p>
+<p><strong>En hızlı yol uygulamanın içinden:</strong> Pofi → Ayarlar → Hesabımı sil. Hesabın ve tüm verilerin (çalışma kayıtları, denemeler, yanlış defteri, fotoğraflar, abonelik kaydı) anında ve kalıcı olarak silinir.</p>
+<p>Uygulamaya erişemiyorsan aşağıdaki formla talep gönder. Talebin 30 gün içinde işlenir. Destek kodunu uygulamada <em>Ayarlar → Destek kodu</em> altında bulursun; uygulama artık yüklü değilse ve kodu bilmiyorsan iletişim adresine yaz, hesabını birlikte bulalım.</p>
+<p class="muted">Pofi+ aboneliğini ayrıca App Store veya Google Play'den iptal etmelisin; hesap silmek ödemeyi durdurmaz.</p>
+<form id="f" novalidate>
+<label for="code">Destek kodu</label>
+<input id="code" name="code" autocomplete="off" inputmode="text" maxlength="10" placeholder="10 karakter" required>
+<label for="contact">İletişim e-postası (isteğe bağlı)</label>
+<input id="contact" name="contact" type="email" autocomplete="email" maxlength="200">
+<button type="submit">Silme talebi gönder</button>
+<p id="result" role="status" aria-live="polite"></p>
+</form>
+<script>
+const f = document.getElementById('f');
+const out = document.getElementById('result');
+f.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const btn = f.querySelector('button');
+  btn.disabled = true;
+  out.textContent = 'Gönderiliyor…';
+  try {
+    const r = await fetch('https://europe-west3-pofi-prod.cloudfunctions.net/webDeletionRequest', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ code: f.code.value, contact: f.contact.value }),
+    });
+    const j = await r.json().catch(() => ({}));
+    out.textContent = j.status === 'recorded'
+      ? 'Talebin alındı. 30 gün içinde işlenecek.'
+      : j.status === 'rate_limited'
+        ? 'Çok fazla deneme yapıldı. Yarın tekrar dene.'
+        : 'Destek kodu 10 karakter olmalı; harfleri ve rakamları kontrol et.';
+  } catch {
+    out.textContent = 'Bağlantı kurulamadı. Biraz sonra tekrar dene.';
+  } finally {
+    btn.disabled = false;
+  }
+});
+</script>
+</main>
+</body>
+</html>

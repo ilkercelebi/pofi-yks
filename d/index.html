@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self'; img-src 'self' data:; connect-src 'self' https://europe-west3-pofi-prod.cloudfunctions.net; form-action 'self'">
+<meta name="referrer" content="no-referrer">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Pofi daveti</title>
+<link rel="stylesheet" href="/pofi-yks/style.css">
+</head>
+<body>
+<main>
+<h1>Pofi'de birlikte çalışalım</h1>
+<p>Arkadaşın seni Pofi'de birlikte YKS'ye çalışmaya çağırdı. Uygulama yüklüyse aşağıdaki düğmeyle aç; yüklü değilse önce indir, sonra bu sayfaya geri dön.</p>
+<p class="muted">Davet kodu: <strong id="code">—</strong></p>
+<p><a id="open" href="#"><button type="button">Uygulamada aç</button></a></p>
+<p><a href="https://apps.apple.com/tr/app/pofi">App Store</a> · <a href="https://play.google.com/store/apps/details?id=com.yksapp.pofi">Google Play</a></p>
+</main>
+<script>
+// İki biçim: Firebase Hosting `/d/KOD`, GitHub Pages `/pofi/d/?k=KOD`.
+const q = new URLSearchParams(location.search).get('k');
+const code = (q || location.pathname.split('/').pop() || '').toUpperCase();
+const ok = /^[2-9A-HJ-NP-Z]{8}$/.test(code);
+document.getElementById('code').textContent = ok ? code : '—';
+const link = 'pofi://app/friend/' + (ok ? code : '');
+document.getElementById('open').href = link;
+if (ok) setTimeout(() => { location.href = link; }, 300);
+</script>
+</body>
+</html>
