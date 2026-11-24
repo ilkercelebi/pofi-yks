@@ -1,11 +1,3 @@
-# Pofi — yasal sayfalar
+# pofi-yks
 
-Pofi: YKS Hazırlık uygulamasının gizlilik politikası, kullanım şartları, KVKK aydınlatma metni, hesap silme ve davet sayfaları.
-
-Yayın adresi: https://ilkercelebi.github.io/pofi-yks/
-
-Bu depodaki dosyalar elle düzenlenmez. Kaynak `yks-app` deposunda `firebase/hosting/` altında. Güncellemek için `yks-app` içinden:
-
-```bash
-python3 tool/site/build_pages.py ../pofi-yks
-```
+Moved to https://ai-dev1234.github.io/pofi-yks/
